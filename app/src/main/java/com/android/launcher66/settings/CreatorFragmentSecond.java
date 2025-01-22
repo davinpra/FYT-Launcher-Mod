@@ -26,7 +26,7 @@ public class CreatorFragmentSecond extends Fragment implements HomeWatcher.OnHom
     int margin;
     int mapMinWidth = 561;
     int mapMinHeight;
-    int dateMinWidth = 561;
+    int dateMinWidth = 320;
     int dateMinHeight = 145;
     int musicMinWidth = 320;
     int musicMinHeight;

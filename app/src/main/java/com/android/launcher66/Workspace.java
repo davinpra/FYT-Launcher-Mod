@@ -521,7 +521,7 @@ public class Workspace extends SmoothPagedView implements DropTarget, DragSource
             
             int mapMinWidth = 561;
             int mapMinHeight = 284;      
-            int dateMinWidth = 561;
+            int dateMinWidth = 320;
             int dateMinHeight = 145;
             int musicMinWidth = 320;
             int musicMinHeight = 284;

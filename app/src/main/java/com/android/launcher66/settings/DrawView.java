@@ -163,7 +163,7 @@ public class DrawView extends View implements View.OnClickListener, HomeWatcher.
         canvas = new Canvas();
 
         mapMinWidth = 561;      
-        dateMinWidth = 561;
+        dateMinWidth = 320;
         dateMinHeight = 145;
         musicMinWidth = 320;
         radioMinWidth = 320;
