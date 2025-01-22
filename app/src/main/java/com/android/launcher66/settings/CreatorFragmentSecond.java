@@ -29,7 +29,7 @@ public class CreatorFragmentSecond extends Fragment implements HomeWatcher.OnHom
     int dateMinWidth = 320;
     int dateMinHeight = 145;
     int musicMinWidth = 320;
-    int musicMinHeight;
+    int musicMinHeight = 145;
     int radioMinWidth = 320;
     int radioMinHeight = 145;
     int mapTopLeftX, mapTopLeftY, mapTopRightX, mapTopRightY, mapBottomRightX, mapBottomRightY, mapBottomLeftX, mapBottomLeftY;
@@ -48,13 +48,15 @@ public class CreatorFragmentSecond extends Fragment implements HomeWatcher.OnHom
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         mContext = container.getContext();
+        /*
         if (getResources().getDisplayMetrics().widthPixels == 1024) {
             mapMinHeight = 284;
             musicMinHeight = 284;
         } else {
             mapMinHeight = 340;
             musicMinHeight = 340;               
-        } 
+        }
+         */
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         boolean leftBar = sharedPrefs.getBoolean("left_bar", false);
         date = sharedPrefs.getBoolean("user_date", false);

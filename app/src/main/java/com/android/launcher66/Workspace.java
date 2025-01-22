@@ -524,24 +524,21 @@ public class Workspace extends SmoothPagedView implements DropTarget, DragSource
             int dateMinWidth = 320;
             int dateMinHeight = 145;
             int musicMinWidth = 320;
-            int musicMinHeight = 284;
+            int musicMinHeight = 145;
             int radioMinWidth = 320;
             int radioMinHeight = 145;
 
             if (getResources().getDisplayMetrics().widthPixels == 1024) {
                 leftBarSize = 100;
                 mapMinHeight = 284;
-                musicMinHeight = 284;
             } else if (getResources().getDisplayMetrics().widthPixels == 1280
                     || getResources().getDisplayMetrics().widthPixels == 1920) {
                 leftBarSize = 110;
                 mapMinHeight = 340;
-                musicMinHeight = 340;
             } else {
                 leftBarSize = 142;
                 mapMinHeight = 340;
-                musicMinHeight = 340;               
-            }  
+            }
 
             if (leftBar) {
                 absoluteLayout = (AbsoluteLayout) this.findViewById(R.id.user_layout_left);
@@ -600,7 +597,16 @@ public class Workspace extends SmoothPagedView implements DropTarget, DragSource
                 int musicWidth = musicTopRightX - musicTopLeftX;
                 
                 View absoluteMusic = this.mLauncher.getLayoutInflater().inflate(R.layout.absolute_music, (ViewGroup) null);
-                absoluteMusic.setLayoutParams(new AbsoluteLayout.LayoutParams(musicWidth, musicHeight, musicTopLeftX, musicTopLeftY)); 
+                absoluteMusic.setLayoutParams(new AbsoluteLayout.LayoutParams(musicWidth, musicHeight, musicTopLeftX, musicTopLeftY));
+
+                //if height is less than 284 disable album image
+                ImageView albumBG = findViewById(R.id.iv_album_bg);
+                if(musicHeight<250){
+                    albumBG.setVisibility(View.GONE);
+                }else{
+                    albumBG.setVisibility(View.VISIBLE);
+                }
+
                 absoluteLayout.addView(absoluteMusic);
             }
             if (userRadio == true)  {

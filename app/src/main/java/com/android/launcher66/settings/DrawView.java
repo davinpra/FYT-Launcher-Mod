@@ -176,7 +176,6 @@ public class DrawView extends View implements View.OnClickListener, HomeWatcher.
             statsWidth = 245;
             statsHeight = 55;
             mapMinHeight = 284;
-            musicMinHeight = 284;
         } else if (getResources().getDisplayMetrics().widthPixels == 1280 
                 || getResources().getDisplayMetrics().widthPixels == 1920) {
             ballDiameter = 50.0f;
@@ -185,7 +184,6 @@ public class DrawView extends View implements View.OnClickListener, HomeWatcher.
             statsWidth = 245;
             statsHeight = 55;
             mapMinHeight = 340;
-            musicMinHeight = 340;
         } else if (getResources().getDisplayMetrics().widthPixels == 2000) {
             ballDiameter = 75.0f;
             coordinatesSize = 50;
@@ -193,7 +191,6 @@ public class DrawView extends View implements View.OnClickListener, HomeWatcher.
             statsWidth = 435;
             statsHeight = 100;
             mapMinHeight = 340;
-            musicMinHeight = 340;
         }     
         sizeOfRect = ballDiameter / 2.0f;
 
