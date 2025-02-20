@@ -1,43 +1,90 @@
 # Reverse engineered launcher for FYT 7862/8581 with launcher creator, night mode and fuel statistics.
 
-TODO - update videos and screenshots for this readme.
-
-So far the launcher has been tested only on 2000x1100 resolution.
+So far the launcher has been tested on 2000x1200 resolution because that is the only device I own.
 
 List of modifications:
-- Reworked music widget working with most of the music players.
+- Music widget (requires Notification Listener permission) working with most of the music players.
 - Launcher creator allowing to adjust launcher layout to user preferences.
-- Live fuel stats with possibility to display them on the main screen and in the chosen apps with specified by user position on the screen.
-- Night Mode that determines sunrise and sunset depending on the location (also allows user to set the wallpaper and brightness for the day/night mode).
+- Live fuel stats (requires Accessibility Service permission) with possibility to display them on the main screen and in the chosen apps with specified by user position on the screen.
+- Night Mode that determines sunrise and sunset depending on the location (also allows user to manually correct sunset and sunrise times, set the wallpaper and brightness for the day/night mode).
 - Settings fragment with useful tweaks.
+- New icon for the launcher and its settings with settings' icon in the app drawer.
 - Replaced part of deprecated code with the new one.
-- Added 1920x720 resolution.
+- Added 1920x720 and 1920x1080 resolutions (need tests).
 
 ![](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/images/example_creator.gif)
 
+**Gallery:**
+
+<details>
+
 [<img src="./images/1.png" width="50%">](./images/1.png)[<img src="./images/2.png" width="50%">](./images/2.png)
+[<img src="./images/s1.png" width="50%">](./images/s1.png)[<img src="./images/s2.png" width="50%">](./images/s2.png)
+[<img src="./images/s3.png" width="50%">](./images/s3.png)[<img src="./images/s4.png" width="50%">](./images/s4.png)
+[<img src="./images/s5.png" width="50%">](./images/s5.png)[<img src="./images/s6.png" width="50%">](./images/s6.png)
+[<img src="./images/s7.png" width="50%">](./images/s7.png)[<img src="./images/s8.png" width="50%">](./images/s8.png)
+
+</details>
+
+**Music widget:**
+
+<details>
+
+![](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/images/example_music.gif)
+
+</details>
+
+**Night mode:**
+
+<details>
+
+![](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/images/example_night_mode.gif)
+
+</details>
+
+**Settings:**
+
+<details>
+
+![](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/images/example_settings.gif)
+
+</details>
+
+**In-app stats:**
+
+<details>
+
+![](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/images/example_inapp_stat.gif)
+
+</details>
 
 ## Fuel statistics
 
-This requires some basic coding skills so that feature probably won't be for everyone (unless it's already adjusted for your car). 
+To have it working you have to find the canbus codes in the source code. Without them enabled widget will show 0 by default.
+
+![](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/images/example_stats.gif)
+
 <details>
+
 1. Go to the Settings > Layout creator and check what does the summary say under the Fuel statistics:
 
-[<img src="./images/Screenshot_2024-09-17_230715.jpg" width="50%">](./images/Screenshot_2024-09-17_230715.jpg)
+[<img src="./images/s4.png" width="50%">](./images/s4.png)
 
-2. It should contain the name of the class that canbus runs as default, in my case it is : [`com.syu.carinfo.rzc.biaozhi408.RZC_BZ408IndexActi.java`](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/fuel_stats/RZC_BZ408IndexActi%20-%20ORIGINAL.java). **This is the file that sholud be modified!** Initially it contains stuff related to FYT canbus app that we don't want to run because it will crash the app so in order to run the fuel ststistics properly you will have to inspect some code and modify it as described below.
+2. It should contain the name of the class that canbus runs as default, in my case it is : [`com.syu.carinfo.rzc.biaozhi408.RZC_BZ408IndexActi.java`](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/fuel_stats_example/RZC_BZ408IndexActi.java). Start with that class and inspect its subclasses if needed.
 
-3. Keep in mind that the following description is an example based on my case, just a hint how to do it.
+3. Keep in mind that the following instruction is an example based on my case, just a hint how to do it. Moreover some units or canbusses don't provide such functionality. If your canbus app doesn't display current fuel consumption and/or cruising range then it means that you can't use this widget.
 
-4. Open the class from step 1. and look for the method that opens next activity that finally contains what we need which is fuel consumption and cruising range. `com.syu.carinfo.rzc.biaozhi408.RZC_BZ408IndexActi.java` contains `onClickListener` with an  intent:
+4. In gereral codes that you are looking for should be in the java file located in the same folder that the class from the step 1 is (in my case biaozhi408). Open that folder in for example Sublime and search fo `L/100KM`. If you find it proceed to the step 7. If not, follow the next steps.
+
+5. Open the class from the step 2. and look for the method that opens the next activity that finally contains what you need, there might be few of them to check. `com.syu.carinfo.rzc.biaozhi408.RZC_BZ408IndexActi.java` contains `onClickListener` with an intent:
 
 ```
                     Intent intent = new Intent();
                     intent.setClass(RZC_BZ408IndexActi.this, RZC_BZ408OilMileIndexActi.class);
 ```
-That originally leads to the class `com.syu.carinfo.rzc.biaozhi408.RZC_BZ408OilMileIndexActi.java` and you should keep looking there.
+That leads to the class `com.syu.carinfo.rzc.biaozhi408.RZC_BZ408OilMileIndexActi.java` and you should keep looking there.
 
-5. In [`RZC_BZ408OilMileIndexActi.java`](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/fuel_stats/RZC_BZ408OilMileIndexActi.java) you will find three tabs:
+6. In [`RZC_BZ408OilMileIndexActi.java`](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/fuel_stats_example/RZC_BZ408OilMileIndexActi.java) you will find three tabs:
 
 ```
         this.mTabHost.addTab(this.mTabHost.newTabSpec("tabPage1").setIndicator("tabPage1").setContent(new Intent(this, (Class<?>) RZC_BZ408OilMilePage1Acti.class)));
@@ -46,7 +93,7 @@ That originally leads to the class `com.syu.carinfo.rzc.biaozhi408.RZC_BZ408OilM
 ```
 `RZC_BZ408OilMilePage1Acti.class` represents the window in fyt canbus app that contains fuel statistics.
 
-6. Finally proceed to [`com.syu.carinfo.rzc.biaozhi408.RZC_BZ408OilMilePage1Acti.java`](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/fuel_stats/RZC_BZ408OilMilePage1Acti.java) and there you will find there the methods (I left only crucial parts):
+7. Finally proceed to [`com.syu.carinfo.rzc.biaozhi408.RZC_BZ408OilMilePage1Acti.java`](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/fuel_stats_example/RZC_BZ408OilMilePage1Acti.java) and you will find there the functions similar to these (I left only the crucial parts):
 
 ```
     private IUiNotify mNotifyCanbus = new IUiNotify() { 
@@ -54,10 +101,10 @@ That originally leads to the class `com.syu.carinfo.rzc.biaozhi408.RZC_BZ408OilM
         public void onNotify(int updateCode, int[] ints, float[] flts, String[] strs) {
             switch (updateCode) {
                 ....
-                case 91:
+                case 102:
                     RZC_BZ408OilMilePage1Acti.this.mUpdaterOilExpend();
                     break;
-                case 92:
+                case 103:
                     RZC_BZ408OilMilePage1Acti.this.mUpdaterDrivingMileage();
                     break;
                 ....
@@ -72,55 +119,47 @@ That originally leads to the class `com.syu.carinfo.rzc.biaozhi408.RZC_BZ408OilM
     }
 
     @Override 
-    protected void onResume() {
-        ....
-        DataCanbus.PROXY.cmd(29, new int[1], null, null);
-        ....
-    }
-
-    @Override 
     public void addNotify() {
-        DataCanbus.NOTIFY_EVENTS[91].addNotify(this.mNotifyCanbus, 1);
-        DataCanbus.NOTIFY_EVENTS[92].addNotify(this.mNotifyCanbus, 1);
+        DataCanbus.NOTIFY_EVENTS[102].addNotify(this.mNotifyCanbus, 1);
+        DataCanbus.NOTIFY_EVENTS[103].addNotify(this.mNotifyCanbus, 1);
         ....
     }
 
     @Override 
     public void removeNotify() {
-        DataCanbus.NOTIFY_EVENTS[91].removeNotify(this.mNotifyCanbus);
-        DataCanbus.NOTIFY_EVENTS[92].removeNotify(this.mNotifyCanbus);
+        DataCanbus.NOTIFY_EVENTS[102].removeNotify(this.mNotifyCanbus);
+        DataCanbus.NOTIFY_EVENTS[103].removeNotify(this.mNotifyCanbus);
         ....
     }
 
     public void mUpdaterOilExpend() {
-        int value = DataCanbus.DATA[91];
+        int value = DataCanbus.DATA[102];
         ....
     }
 
     public void mUpdaterDrivingMileage() {
-        int value = DataCanbus.DATA[92];
+        int value = DataCanbus.DATA[103];
         ....
     }
 ```
 
-6. Modded [`com.syu.carinfo.rzc.biaozhi408.RZC_BZ408IndexActi.java`](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/fuel_stats/RZC_BZ408IndexActi%20-%20MOD.java) contains the methods above, do not change the methods' names, just update necessary parts - codes `91`, `92`, and `DataCanbus.PROXY.cmd(70, new int[]{51}, null, null);`, `DataCanbus.PROXY.cmd(29, new int[1], null, null);` If you have some problems with identifying these codes please look for the file in the containing folder that contains general codes list for particular car (in my case it is [`com.syu.carinfo.rzc.biaozhi408.Const_RZC4_PSA_ALL_DATA.java`](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/fuel_stats/Const_RZC4_PSA_ALL_DATA.java)).
+8. The codes that you are looking for are inside `DataCanbus.DATA[102]`, `DataCanbus.DATA[103]`, and `DataCanbus.PROXY.cmd(70, new int[]{51}, null, null);`. The launcher setting should be updated as below:
 
-7. After updating code in step 6. please rename `RZC_BZ408IndexActi` in `public class RZC_BZ408IndexActi extends Service implements PropertyChangeListener` and the file name as well to the name displayed in the settings as stated in step 1., remember to update `package com.syu.carinfo.rzc.biaozhi408;` according to your class name. Replace it with original file stated in step 1.
+    `Fuel: 102, Range: 103, cmdInt: 70, cmdArr: 51`
 
-8. Open [`AndroidManifest.xml`](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/app/src/main/AndroidManifest.xml) and look for:
-```
-        <!-- Replace "com.syu.carinfo.rzc.biaozhi408.RZC_BZ408IndexActi" with your class name provided in the settings -->
-        <service
-            android:name="com.syu.carinfo.rzc.biaozhi408.RZC_BZ408IndexActi"
-            android:enabled="true"
-            android:exported="true">
-        </service>
-```
-Rename `android:name="com.syu.carinfo.rzc.biaozhi408.RZC_BZ408IndexActi"` accordingly to your newly modded file from step 7. says.
+ If you have some problems with identifying these codes please look for the file in the containing folder that holds general code list for particular car (It might NOT be available for every car! In my case it is [`com.syu.carinfo.rzc.biaozhi408.Const_RZC4_PSA_ALL_DATA.java`](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/fuel_stats_example/Const_RZC4_PSA_ALL_DATA.java)).
 
-9. If everything goes well, enabling `Fuel statistics` in Settings shouldn't result in an error while going back to the launcher's main window and you should see a popup containing stats as on the screenshot below.
+9. If the widget still shows `0.0 L/100Km` and `0 Km` or the readings are bizzare and inadequate, then it means that your device probably uses different codes than provided in this library. To get these codes you will have to unpack the canbus app installed on your head unit. 
 
-[<img src="./images/Screenshot_2024-09-17_231235.jpg" width="50%">](./images/Screenshot_2024-09-17_231235.jpg)
+10. To extract the apk file please instal on your device [Apk Analyzer](https://play.google.com/store/apps/details?id=sk.styk.martin.apkanalyzer&hl=en&pli=1). Open it and type `com.syu.canbus` in the search bar. Open the result and in the next window press the three dots in the bottom right corner, then press `Export APK`. Move exported `com.syu.canbus.apk` to your PC.
+
+11. To unpack the extracted apk please use [APKRepatcher](https://github.com/vasyl91/APKRepatcher/releases/tag/Update2024) tool. Download it and inside APKRepatcher folder hold the Shift key, then right-click an empty area and open Command Prompt from the context menu. Paste in Command Prompt `java -jar APKRepatcher.jar` and press Enter. (Install java on your PC if needed, google it).
+
+12. In the APKRepatcher go to File > Open APK, select your `com.syu.canbus.apk` and wait till it finishes. Then go to the directory `APKRepatcher\Projects\com.syu.canbus.apk\javaCode\classes.dex\sources\com\syu` and repeat the step 2.
+
+
+In my case the canbus stops sending the fuel consumption when the speed drops below 40km/h so I added function that attempts to ROUGHLY estimate the fuel consumption to provide some insight even though it undoubtedly is an inaccurate calculation. To use that you will need to find one additional code which represents RPM - `U_ENGINE_SPEED = 148;` found in [`Const_RZC4_PSA_ALL_DATA.java`](https://github.com/vasyl91/FYT-Launcher-Mod/blob/main/fuel_stats_example/Const_RZC4_PSA_ALL_DATA.java)) mentioned earlier and provide car details in app settings.
+
 </details>
 
 
